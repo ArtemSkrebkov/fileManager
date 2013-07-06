@@ -12,9 +12,9 @@ public:
 	void Copy(std::string filePath);
 	void Delete();
 	unsigned int GetCountSubElement() const { return mSubElement.size(); }
-
-	CElement *GetSubElement(int i) const;
-	CElement *GetSubElement(std::string fileName);
+	void GoSelect(const std::string elementName);
+	
+	std::string GetNameSubElement(int i);
 
 	bool IsLoadSubElement() const { return mLoadSubElement; }
 private:
@@ -22,6 +22,9 @@ private:
 	bool mLoadSubElement;
 	//подгружает содержимое на один уровень
 	void LoadSubElement(std::string filePath, std::string fileName);
+
+	CElement *GetSubElement(int i) const;
+	CElement *GetSubElement(const std::string &fileName);
 };
 
 #endif

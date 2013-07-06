@@ -7,6 +7,11 @@ CFile::CFile(std::string filePath, std::string fileName): CElement(filePath, fil
 
 }
 
+void CFile::GoSelect(const std::string elementName)
+{
+	//как-то обработать открыть
+}
+
 void CFile::Copy(std::string filePath)
 {
 	std::string currentFullName = mFilePath + mFileName;

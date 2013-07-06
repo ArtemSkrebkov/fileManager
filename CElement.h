@@ -12,7 +12,7 @@ public:
 	CElement(std::string &filePath, std::string &fileName, ETypeElement type);
 	virtual void Copy(std::string filePath) = 0;
 	virtual void Delete() = 0;
-
+	virtual void GoSelect(const std::string elementName) = 0;
 	void Move(std::string filePath);
 
 	void ReName(std::string fileName);
