@@ -1,5 +1,5 @@
 #pragma once
-#include "CFileListView.h"
+#include "CTab.h"
 
 namespace FileMan {
 
@@ -24,10 +24,14 @@ namespace FileMan {
 	public:
 		Form1(void)
 		{
-			CFileListView ^w = gcnew CFileListView("F:\\bot\\");
-			w->View = View::List;
+			//CFileListView ^w = gcnew CFileListView("F:\\bot\\");
+			//w->View = View::List;
 			//w->Items->Add("aaa");
-			this->Controls->Add(w);
+			//this->Controls->Add(w);
+			//CDiskComboBox ^c = gcnew CDiskComboBox;
+			//this->Controls->Add(c);
+			CTab ^tab = gcnew CTab();
+			this->Controls->Add(tab);
 			InitializeComponent();
 			//
 			//TODO: добавьте код конструктора
@@ -78,7 +82,7 @@ namespace FileMan {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(284, 262);
+			this->ClientSize = System::Drawing::Size(342, 268);
 			this->Controls->Add(this->button1);
 			this->Name = L"Form1";
 			this->Text = L"Form1";

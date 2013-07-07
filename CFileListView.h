@@ -7,11 +7,23 @@ using namespace System::Runtime::InteropServices;
 ref class CFileListView: public ListView
 {
 public:
-	CFileListView(std::string startPath)
+	CFileListView(String ^startPath)
 	{
 		this->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler(this, &CFileListView::MouseDoubleClickEvent);
+		this->Height = 100;
+		this->Width = 200;
+		currentElement = NULL;
+		
+		SetPath(startPath);
+	}
 
-		currentElement = new CFolder(startPath, "", true);
+	void SetPath(String ^startPath)
+	{
+		if(currentElement != NULL)
+			delete currentElement;
+
+		std::string strStartPath = SystemToStl(startPath);
+		currentElement = new CFolder(strStartPath, "..", true);
 		Update();
 	}
 

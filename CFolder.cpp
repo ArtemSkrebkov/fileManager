@@ -24,6 +24,11 @@ void CFolder::GoSelect(const std::string elementName)
 		mSubElement.clear();
 		this->LoadSubElement(mFilePath, mFileName);
 	}
+	else
+	{
+		CFile *findFile = dynamic_cast<CFile *>(findElement);
+		findFile->Execute();
+	}
 }
 
 std::string CFolder::GetNameSubElement(int i)
@@ -61,8 +66,13 @@ CElement *CFolder::GetSubElement(const std::string &fileName)
 void CFolder::LoadSubElement(std::string filePath, std::string fileName)
 {
 	WIN32_FIND_DATA findData;
-	
-	std::string fullName = filePath + fileName + "\\";
+	std::string fullName;
+
+	if(fileName != "")
+		fullName = filePath + fileName + "\\";
+	else
+		fullName = filePath;
+
 	std::string fullNameSearch = fullName + "*";
 	
 	HANDLE handleFindFile = FindFirstFile(fullNameSearch.data(), &findData);
