@@ -7,7 +7,6 @@ public:
 	CTab()
 	{
 		InitComponent();
-
 	}
 	
 private:
@@ -20,24 +19,27 @@ private:
 
 	void InitComponent()
 	{
-		this->Width = 300;
-		this->Height = 200;
 		this->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+		
 		//выпадающий список с названиями дисков
 		diskComboBox = gcnew CDiskComboBox();
-		this->Controls->Add(diskComboBox);
+		diskComboBox->Dock = DockStyle::Top;
 		diskComboBox->SelectionChangeCommitted += gcnew System::EventHandler(this, &CTab::ChangeDiskEvent); 
+
 		//путь начального диска
 		String ^path = gcnew String(diskComboBox->GetNameCurrentDisk());
 		path += ":\\";
 		//список файлов
-		fileListView = gcnew CFileListView(path);
-		this->Controls->Add(fileListView);
-		fileListView->Top = diskComboBox->Height;
-		fileListView->Width = this->Width;
-		fileListView->Height = this->Height - fileListView->Top;
-	}
+		fileListView = gcnew CFileListView(path);	
+		fileListView->Dock = DockStyle::Fill;
 
+
+		Splitter ^splitter = gcnew Splitter;
+		splitter->Dock = DockStyle::Top;
+		
+		array<Control ^> ^tmp = { fileListView,splitter, diskComboBox};
+		this->Controls->AddRange(tmp);
+	}
 	CFileListView ^fileListView;
 	CDiskComboBox ^diskComboBox;
 };

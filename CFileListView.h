@@ -9,9 +9,8 @@ ref class CFileListView: public ListView
 public:
 	CFileListView(String ^startPath)
 	{
+		//this->View = System::Windows::Forms::View::List;
 		this->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler(this, &CFileListView::MouseDoubleClickEvent);
-		this->Height = 100;
-		this->Width = 200;
 		currentElement = NULL;
 		
 		SetPath(startPath);
