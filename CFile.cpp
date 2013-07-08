@@ -14,6 +14,11 @@ void CFile::Execute()
 	HINSTANCE g = ShellExecute(NULL, "open", mFileName.data(), NULL, mFilePath.data(), SW_SHOWNORMAL);
 }
 
+std::string CFile::GetFullName()
+{
+	return mFilePath + mFileName;
+}
+
 void CFile::Copy(std::string filePath)
 {
 	std::string currentFullName = mFilePath + mFileName;

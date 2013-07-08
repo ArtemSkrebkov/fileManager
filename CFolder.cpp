@@ -31,6 +31,11 @@ void CFolder::GoSelect(const std::string elementName)
 	}
 }
 
+std::string CFolder::GetFullName()
+{
+	return mFilePath + mFileName + "\\";
+}
+
 std::string CFolder::GetNameSubElement(int i)
 {
 	std::string result = "";
@@ -52,7 +57,7 @@ CElement *CFolder::GetSubElement(int i)const
 	return NULL;
 }
 
-CElement *CFolder::GetSubElement(const std::string &fileName)
+CElement *CFolder::GetSubElement(const std::string fileName)
 {
 	CElement *result = NULL;
 

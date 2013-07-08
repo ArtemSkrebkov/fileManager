@@ -19,6 +19,8 @@ public:
 	std::string GetName() const;
 	std::string GetPath() const;
 
+	virtual std::string GetFullName() = 0;
+
 	ETypeElement GetType() const { return mType; }
 protected:
 	std::string mFileName;

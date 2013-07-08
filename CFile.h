@@ -9,6 +9,7 @@ public:
 	CFile(std::string filePath, std::string fileName);
 	void Copy(std::string filePath);
 	void Delete();
+	std::string GetFullName();
 	void Execute();
 };
 
