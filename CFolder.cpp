@@ -11,41 +11,9 @@ CFolder::CFolder(std::string filePath, std::string fileName, bool loadSubElement
 	}
 }
 
-void CFolder::GoSelect(const std::string elementName)
-{
-	CElement *findElement = GetSubElement(elementName);
-
-	CFolder *findFolder = dynamic_cast<CFolder *>(findElement);
-	//если dynamic_cast отработал не null то значит папка, выполняем переход
-	if(findFolder != NULL)
-	{
-		mFileName = findFolder->mFileName;
-		mFilePath = findFolder->mFilePath;
-		mSubElement.clear();
-		this->LoadSubElement(mFilePath, mFileName);
-	}
-	else
-	{
-		CFile *findFile = dynamic_cast<CFile *>(findElement);
-		findFile->Execute();
-	}
-}
-
 std::string CFolder::GetFullName()
 {
 	return mFilePath + mFileName + "\\";
-}
-
-std::string CFolder::GetNameSubElement(int i)
-{
-	std::string result = "";
-
-	if(i < mSubElement.size())
-	{
-		result = mSubElement[i]->GetName();
-	}
-
-	return result;
 }
 
 CElement *CFolder::GetSubElement(int i)const
@@ -70,8 +38,12 @@ CElement *CFolder::GetSubElement(const std::string fileName)
 
 void CFolder::LoadSubElement(std::string filePath, std::string fileName)
 {
+	for(int i = 0; i < mSubElement.size(); i++)
+		delete mSubElement[i];
+	mSubElement.clear();
+
 	WIN32_FIND_DATA findData;
-	std::string fullName;
+	std::string fullName;	
 
 	if(fileName != "")
 		fullName = filePath + fileName + "\\";
@@ -128,6 +100,10 @@ void CFolder::Copy(std::string filePath)
 
 void CFolder::Delete()
 {
+	int indexDeleted = -1;
+	if(!mLoadSubElement)
+		LoadSubElement(mFilePath, mFileName);
+
 	for(int i = 0; i < mSubElement.size(); i++)
 		if(mSubElement[i]->GetName() != "..")
 		{
@@ -143,6 +119,12 @@ void CFolder::Delete()
 				mSubElement[i]->Delete();
 		}
 
-	std::string fullName = mFilePath + mFileName;
-	unsigned int g = RemoveDirectory(fullName.data());
+	std::string fullName = mFilePath + mFileName + "\\";
+	RemoveDirectory(fullName.data());
+}
+
+CFolder::~CFolder()
+{
+	for(int i = 0; i < mSubElement.size(); i++)
+		delete mSubElement[i];
 }

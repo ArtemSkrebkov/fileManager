@@ -26,6 +26,7 @@ void CElement::Move(std::string filePath)
 	mFilePath = filePath;
 	//если true - падает с ошибкой, если такой файл существет
 	int f = MoveFile(currentFullName.data(), newFullName.data());
+	int g = GetLastError();
 }
 
 std::string CElement::GetName() const

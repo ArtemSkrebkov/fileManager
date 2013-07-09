@@ -15,13 +15,13 @@ public:
 	std::string GetFullName();
 
 	unsigned int GetCountSubElement() const { return mSubElement.size(); }
-	void GoSelect(const std::string elementName);
 
 	CElement *GetSubElement(int i) const;
 	CElement *GetSubElement(const std::string fileName);
-	std::string GetNameSubElement(int i);
 
 	bool IsLoadSubElement() const { return mLoadSubElement; }
+
+	~CFolder();
 private:
 	std::vector<CElement *> mSubElement;
 	bool mLoadSubElement;

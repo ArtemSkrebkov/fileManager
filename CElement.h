@@ -12,13 +12,12 @@ public:
 	CElement(std::string &filePath, std::string &fileName, ETypeElement type);
 	virtual void Copy(std::string filePath) = 0;
 	virtual void Delete() = 0;
-	void Move(std::string filePath);
 
+	void Move(std::string filePath);
 	void ReName(std::string fileName);
 
 	std::string GetName() const;
 	std::string GetPath() const;
-
 	virtual std::string GetFullName() = 0;
 
 	ETypeElement GetType() const { return mType; }
