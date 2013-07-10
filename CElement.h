@@ -4,7 +4,7 @@
 #ifndef CELEMENT_H
 #define CELEMENT_H
 
-enum ETypeElement { FILES, FOLDERS} ;
+enum ETypeElement { FILES, FOLDERS};
 
 class CElement
 {

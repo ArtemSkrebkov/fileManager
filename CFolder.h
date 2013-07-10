@@ -21,6 +21,7 @@ public:
 
 	bool IsLoadSubElement() const { return mLoadSubElement; }
 
+	void Update();
 	~CFolder();
 private:
 	std::vector<CElement *> mSubElement;

@@ -15,22 +15,26 @@ public:
 	{
 		CElement *currentElement = currentFolder->GetSubElement(SystemToStl(fileListView->SelectedItems[0]->Text));
 		currentElement->Copy(targetPanel->currentFolder->GetFullName());
+
+		targetPanel->Update();
 	}
 
 	void MoveSelectElement(CFilesPanel ^targetPanel)
 	{
 		CElement *currentElement = currentFolder->GetSubElement(SystemToStl(fileListView->SelectedItems[0]->Text));
 		currentElement->Move(targetPanel->currentFolder->GetFullName());
+
+		this->Update();
+		targetPanel->Update();
 	}
 
 	void DeleteSelectElement()
 	{
 		CElement *currentElement = currentFolder->GetSubElement(SystemToStl(fileListView->SelectedItems[0]->Text));
-		fileListView->SelectedItems[0]->Remove();
-		
+		//fileListView->SelectedItems[0]->Remove();
 		currentElement->Delete();
 		//как удалить из текущего фолдера, строчки ниже достаточно?
-		//delete currentElement;
+		Update();
 	}
 
 	void RenameSelectElement()
@@ -39,9 +43,16 @@ public:
 		fileListView->Controls->Add(renameTextBox);
 		
 		renameTextBox->Top = fileListView->SelectedItems[0]->Bounds.Top;
-		renameTextBox->Hide();
 	}
+	
+
 private:
+	void  Update()
+	{
+		currentFolder->Update();
+		fileListView->UpdateList(currentFolder);
+	}
+
 	void ChangeDiskEvent(System::Object^  sender, System::EventArgs^  e)
 	{
 		String ^path = diskComboBox->GetNameCurrentDisk();
@@ -111,7 +122,7 @@ private:
 		Splitter ^splitter = gcnew Splitter;
 		splitter->Dock = DockStyle::Top;
 		
-		array<Control ^> ^tmp = { fileListView,splitter, diskComboBox};
+		array<Control ^> ^tmp = { fileListView, splitter, diskComboBox};
 		this->Controls->AddRange(tmp);
 	}
 	CFileListView ^fileListView;

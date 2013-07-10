@@ -11,15 +11,19 @@ public:
 		this->Dock = DockStyle::Fill;
 		leftPanel = gcnew CFilesPanel();
 		leftPanel->Dock = DockStyle::Left; 
+		leftPanel->Leave += gcnew System::EventHandler(this, &CMainPanel::LostFocusPanelEvent);
 
 		rightPanel = gcnew CFilesPanel();
 		rightPanel->Dock = DockStyle::Fill;
+		rightPanel->Leave += gcnew System::EventHandler(this, &CMainPanel::LostFocusPanelEvent);
 
-		activePanel = leftPanel;
-		notActivePanel = rightPanel;
+		//activePanel = leftPanel;
+		//notActivePanel = rightPanel;
 			
 		Splitter ^splitterPanel = gcnew Splitter;
 		splitterPanel->Dock = DockStyle::Left;
+
+		leftPanel->Width = 500;
 	
 		copyButton = gcnew Button();
 		copyButton->Text = "Copy";
@@ -42,23 +46,23 @@ public:
 		moveButton->Dock = DockStyle::Right;
 		moveButton->Click += gcnew System::EventHandler(this, &CMainPanel::MoveFromActiveEvent);
 
-
 		Splitter ^sp3 = gcnew Splitter;
 		sp3->Dock = DockStyle::Right;
 		
 		renameButton = gcnew Button();
 		renameButton->Text = "Rename";
 		renameButton->Dock = DockStyle::Right;
-		renameButton->Click += gcnew System::EventHandler(this, &CMainPanel::RenameFromActiveEvent);
+		renameButton->Click += gcnew System::EventHandler(this, &CMainPanel::RenameFromActiveEvent);	
 
 		buttonPanel = gcnew Panel;
 		buttonPanel->Dock = DockStyle::Bottom;
-
+		
 		buttonPanel->Controls->AddRange(gcnew array<Control ^> {copyButton, sp1, moveButton, sp2, renameButton, sp3, deleteButton});
 
 		Splitter ^splitterButton = gcnew Splitter;
 		splitterButton->Dock = DockStyle::Bottom;
-
+		
+		buttonPanel->Height = splitterButton->MinExtra;
 		array<Control ^> ^tmp = {rightPanel,splitterPanel,leftPanel, splitterButton, buttonPanel};
 		this->Controls->AddRange(tmp);
 	}
@@ -73,6 +77,22 @@ private:
 	Button ^deleteButton;
 	Button ^moveButton;
 	Button ^renameButton;
+
+	void LostFocusPanelEvent(System::Object^  sender, System::EventArgs^  e)
+	{
+		activePanel = (CFilesPanel ^)sender;
+
+		if(activePanel == leftPanel)
+		{
+			notActivePanel = rightPanel;
+			//MessageBox::Show("left");
+		}
+		else
+		{
+			notActivePanel = leftPanel;
+			//MessageBox::Show("right");
+		}
+	}
 
 	void DeleteFromActiveEvent(System::Object^  sender, System::EventArgs^  e)
 	{

@@ -123,6 +123,11 @@ void CFolder::Delete()
 	RemoveDirectory(fullName.data());
 }
 
+void CFolder::Update()
+{
+	LoadSubElement(mFilePath, mFileName);
+}
+
 CFolder::~CFolder()
 {
 	for(int i = 0; i < mSubElement.size(); i++)
