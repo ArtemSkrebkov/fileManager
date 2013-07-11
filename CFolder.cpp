@@ -1,14 +1,27 @@
 #include "stdafx.h"
 #include "CFolder.h"
-
+#include "limits.h"
 CFolder::CFolder(std::string filePath, std::string fileName, bool loadSubElement): CElement(filePath, fileName, ETypeElement::FOLDERS)
 {
 	mLoadSubElement = loadSubElement;
-
+	std::string tmp = GetParentStrPathFromString("f:\\dgle\\fff");
+	tmp = GetParentStrNameFromString("f:\\dgle\\fff");
 	if(mLoadSubElement)
 	{
 		LoadSubElement(filePath, fileName);
+
+		if(fileName != ".")
+		{
+			std::string parentPath = GetParentStrPathFromString(filePath + fileName);
+			std::string parentName = GetParentStrNameFromString(filePath + fileName);
+		
+			mParent = new CFolder(parentPath, parentName, true);
+		}
+		else
+			mParent = NULL;
 	}
+
+	
 }
 
 std::string CFolder::GetFullName()
@@ -25,10 +38,10 @@ CElement *CFolder::GetSubElement(int i)const
 	return NULL;
 }
 
-CElement *CFolder::GetSubElement(const std::string fileName)
+CElement *CFolder::GetSubElement(const std::string &fileName)
 {
 	CElement *result = NULL;
-
+	
 	for(std::vector<CElement *>::iterator i = mSubElement.begin(); i != mSubElement.end(); i++)
 		if((*i)->GetName() == fileName)
 			result = *i;
@@ -38,6 +51,7 @@ CElement *CFolder::GetSubElement(const std::string fileName)
 
 void CFolder::LoadSubElement(std::string filePath, std::string fileName)
 {
+	//mLoadSubElement = true;
 	for(int i = 0; i < mSubElement.size(); i++)
 		delete mSubElement[i];
 	mSubElement.clear();
@@ -132,4 +146,44 @@ CFolder::~CFolder()
 {
 	for(int i = 0; i < mSubElement.size(); i++)
 		delete mSubElement[i];
+}
+
+std::string CFolder::GetStrPathFromString(std::string fileName)
+{
+	unsigned int pos = fileName.find_last_of("\\");
+	std::string result;
+	if(pos != UINT_MAX)
+		result = fileName.substr(0, pos + 1);
+	else
+		result = fileName + "\\";
+
+	return result;
+}
+
+std::string CFolder::GetStrNameFromString(std::string fileName)
+{
+	unsigned int pos = fileName.find_last_of("\\");
+	std::string result = "";
+	if(pos != UINT_MAX)
+		result = fileName.substr(pos + 1, fileName.size());
+	else
+		result = ".";
+
+	return result;
+}
+
+std::string CFolder::GetParentStrPathFromString(std::string fileName)
+{
+	int pos = fileName.find_last_of("\\");
+	std::string result = fileName.substr(0, pos);
+	result = GetStrPathFromString(result);
+	return result;
+}
+
+std::string CFolder::GetParentStrNameFromString(std::string fileName)
+{
+	int pos = fileName.find_last_of("\\");
+	std::string result = fileName.substr(0, pos);
+	result = GetStrNameFromString(result);
+	return result;
 }

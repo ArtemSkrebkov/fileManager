@@ -16,9 +16,6 @@ public:
 		rightPanel = gcnew CFilesPanel();
 		rightPanel->Dock = DockStyle::Fill;
 		rightPanel->Leave += gcnew System::EventHandler(this, &CMainPanel::LostFocusPanelEvent);
-
-		//activePanel = leftPanel;
-		//notActivePanel = rightPanel;
 			
 		Splitter ^splitterPanel = gcnew Splitter;
 		splitterPanel->Dock = DockStyle::Left;

@@ -7,7 +7,7 @@ public:
 	CFilesPanel()
 	{
 		currentFolder = new CFolder("C:\\", ".", true);
-		
+		CFolder *tmp = new CFolder("f:\\dgle\\Bin\\BrowserPlugins\\", "asteroids", true);
 		InitComponent();
 	}
 	 
@@ -69,29 +69,27 @@ private:
 	{
 		System::String ^sysStringItem = gcnew System::String(fileListView->SelectedItems[0]->Text);
 		
-		CElement *tmp = currentFolder->GetSubElement(SystemToStl(sysStringItem));
+		if(sysStringItem != "..")
+		{
+			CElement *tmp = currentFolder->DownLevel(SystemToStl(sysStringItem));
 
-		if(tmp != NULL)
-			if(tmp->GetType() == ETypeElement::FILES)
-			{
-				CFile *file = dynamic_cast<CFile *>(tmp);
-				file->Execute();
-			}
-			else
-			{
-				CFolder *newFolder = new CFolder(tmp->GetPath(), tmp->GetName(), true);
-
-				if(currentFolder != NULL)
-					delete currentFolder;
-				currentFolder = newFolder;
-
-				fileListView->UpdateList(currentFolder);
-			}
-	}
-
-	void ChangeCurrentElementEvent( Object^ sender, System::Windows::Forms::ListViewItemSelectionChangedEventArgs^ e)
-	{
-		currentElement = currentFolder->GetSubElement(SystemToStl(e->ToString()));		
+			if(tmp != NULL)
+				if(tmp->GetType() == ETypeElement::FILES)
+				{
+					CFile *file = dynamic_cast<CFile *>(tmp);
+					file->Execute();
+				}
+				else
+				{
+					currentFolder = dynamic_cast<CFolder *>(tmp);
+					fileListView->UpdateList(currentFolder);
+				}
+		}
+		else
+		{
+			currentFolder = currentFolder->GetParent();
+			fileListView->UpdateList(currentFolder);
+		}
 	}
 
 	std::string SystemToStl(String ^s)
@@ -117,7 +115,6 @@ private:
 		//fileListView->HideSelection = false;
 		fileListView->Dock = DockStyle::Fill;
 		fileListView->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler(this, &CFilesPanel::ExecuteElementEvent);
-		fileListView->ItemSelectionChanged += gcnew System::Windows::Forms::ListViewItemSelectionChangedEventHandler(this, &CFilesPanel::ChangeCurrentElementEvent);
 		//разделитель
 		Splitter ^splitter = gcnew Splitter;
 		splitter->Dock = DockStyle::Top;
@@ -125,10 +122,9 @@ private:
 		array<Control ^> ^tmp = { fileListView, splitter, diskComboBox};
 		this->Controls->AddRange(tmp);
 	}
+
 	CFileListView ^fileListView;
 	CDiskComboBox ^diskComboBox;
 
 	CFolder *currentFolder;
-
-	CElement *currentElement;
 };
