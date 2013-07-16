@@ -8,7 +8,8 @@
 class CFolder: public CElement
 {
 public:
-	CFolder(std::string filePath, std::string fileName, bool loadSubElement);
+	CFolder(std::string filePath, std::string fileName);
+	CFolder(std::string filePath, std::string fileName, CFolder *parent);
 
 	void Copy(std::string filePath);
 	void Delete();
@@ -25,22 +26,16 @@ public:
 	CElement *GetSubElement(const std::string &fileName);
 
 	bool IsLoadSubElement() const { return mLoadSubElement; }
+	void LoadSubElement();
 
-	CElement *DownLevel(std::string fileName)
+	void SetOpen(bool value)
 	{
-		CElement *result = GetSubElement(fileName);
-		if(result != NULL)
-			if(result->GetType() == ETypeElement::FOLDERS)
-			{
-				CFolder *tmp = dynamic_cast<CFolder *>(result);
-				if(!tmp->mLoadSubElement)
-				{
-					tmp->mLoadSubElement = true;
-					tmp->LoadSubElement(tmp->mFilePath, tmp->mFileName);
-					tmp->mParent = this;
-				}
-			}
-		return result; 
+		mOpen = value;
+	}
+
+	bool isOpen() const
+	{
+		return mOpen;
 	}
 
 	void Update();
@@ -49,9 +44,7 @@ private:
 	CFolder *mParent;
 	std::vector<CElement *> mSubElement;
 	bool mLoadSubElement;
-	//подгружает содержимое на один уровень
-	void LoadSubElement(std::string filePath, std::string fileName);
-
+	bool mOpen;
 	//функции для работы с именами директорий(извлечение пути, извлечение имени)
 	std::string GetStrPathFromString(std::string fileName);
 

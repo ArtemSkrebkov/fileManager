@@ -1,37 +1,37 @@
 #include "stdafx.h"
 #include "CFolder.h"
 #include "limits.h"
-CFolder::CFolder(std::string filePath, std::string fileName, bool loadSubElement): CElement(filePath, fileName, ETypeElement::FOLDERS)
+#include <stack>
+
+CFolder::CFolder(std::string filePath, std::string fileName): CElement(filePath, fileName, ETypeElement::FOLDERS)
 {
-	mLoadSubElement = loadSubElement;
-	std::string tmp = GetParentStrPathFromString("f:\\dgle\\fff");
-	tmp = GetParentStrNameFromString("f:\\dgle\\fff");
-	if(mLoadSubElement)
-	{
-		LoadSubElement(filePath, fileName);
+	mLoadSubElement = false;
+	mFilePath = filePath;
+	mFileName = fileName;
+}
 
-		if(fileName != ".")
-		{
-			std::string parentPath = GetParentStrPathFromString(filePath + fileName);
-			std::string parentName = GetParentStrNameFromString(filePath + fileName);
-		
-			mParent = new CFolder(parentPath, parentName, true);
-		}
-		else
-			mParent = NULL;
-	}
-
-	
+CFolder::CFolder(std::string filePath, std::string fileName,  CFolder *parent):CElement(filePath, fileName, ETypeElement::FOLDERS)
+{
+	mParent = parent;
+	mFilePath = filePath;
+	mFileName = fileName;
+	LoadSubElement();
 }
 
 std::string CFolder::GetFullName()
 {
-	return mFilePath + mFileName + "\\";
+	std::string result;
+
+	if(mFileName != "")
+		result = mFilePath + mFileName + "\\";
+	else
+		result = mFilePath;
+
+	return result;
 }
 
 CElement *CFolder::GetSubElement(int i)const
 {
-
 	if(i < mSubElement.size())
 		return mSubElement[i];
 
@@ -49,9 +49,9 @@ CElement *CFolder::GetSubElement(const std::string &fileName)
 	return result;
 }
 
-void CFolder::LoadSubElement(std::string filePath, std::string fileName)
+void CFolder::LoadSubElement()
 {
-	//mLoadSubElement = true;
+	mLoadSubElement = true;
 	for(int i = 0; i < mSubElement.size(); i++)
 		delete mSubElement[i];
 	mSubElement.clear();
@@ -59,10 +59,10 @@ void CFolder::LoadSubElement(std::string filePath, std::string fileName)
 	WIN32_FIND_DATA findData;
 	std::string fullName;	
 
-	if(fileName != "")
-		fullName = filePath + fileName + "\\";
+	if(mFileName != "")
+		fullName = mFilePath + mFileName + "\\";
 	else
-		fullName = filePath;
+		fullName = mFilePath;
 
 	std::string fullNameSearch = fullName + "*";
 	
@@ -78,7 +78,7 @@ void CFolder::LoadSubElement(std::string filePath, std::string fileName)
 			{
 				if(newFileName == "." /*||newFileName == ""||newFileName == ".."*/) continue;
 
-				mSubElement.push_back(new CFolder(fullName, newFileName, false));
+				mSubElement.push_back(new CFolder(fullName, newFileName));
 			}
 			else
 			{
@@ -95,6 +95,8 @@ void CFolder::Copy(std::string filePath)
 {
 	std::string newFullName = filePath + mFileName + "\\";
 	CreateDirectory(newFullName.data(), NULL);//атрибуты секретности по-умолчанию
+	if(!mLoadSubElement)
+		LoadSubElement();
 	for(int i = 0; i < mSubElement.size(); i++)
 	{
 		if(mSubElement[i]->GetName() != "..")
@@ -103,7 +105,7 @@ void CFolder::Copy(std::string filePath)
 			{
 				CFolder *tmp = dynamic_cast<CFolder *>(mSubElement[i]);
 				if(!tmp->IsLoadSubElement())
-					tmp->LoadSubElement(tmp->GetPath(), tmp->GetName());
+					tmp->LoadSubElement();
 				tmp->Copy(newFullName);
 			}
 			else
@@ -116,7 +118,7 @@ void CFolder::Delete()
 {
 	int indexDeleted = -1;
 	if(!mLoadSubElement)
-		LoadSubElement(mFilePath, mFileName);
+		LoadSubElement();
 
 	for(int i = 0; i < mSubElement.size(); i++)
 		if(mSubElement[i]->GetName() != "..")
@@ -125,7 +127,7 @@ void CFolder::Delete()
 			{
 				CFolder *tmp = dynamic_cast<CFolder *>(mSubElement[i]);
 				if(!tmp->IsLoadSubElement())
-					tmp->LoadSubElement(tmp->GetPath(), tmp->GetName());
+					tmp->LoadSubElement();
 
 				tmp->Delete();
 			}
@@ -139,7 +141,7 @@ void CFolder::Delete()
 
 void CFolder::Update()
 {
-	LoadSubElement(mFilePath, mFileName);
+	LoadSubElement();
 }
 
 CFolder::~CFolder()

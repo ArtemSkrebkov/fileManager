@@ -24,11 +24,10 @@ namespace FileMan {
 	public:
 		Form1(void)
 		{
-			
+			mainPanel = gcnew CMainPanel();
 			InitializeComponent();
-			CMainPanel ^g = gcnew CMainPanel();
 			
-			this->Controls->Add(g);
+			this->Controls->Add(mainPanel);
 		}
 	protected:
 		/// <summary>
@@ -42,15 +41,8 @@ namespace FileMan {
 			}
 		}
 
-
-
-
-
 	private:
-		CFilesPanel ^firstTab;
-		CFilesPanel ^secondTab;
-
-		CFilesPanel ^activeTab;
+		CMainPanel ^mainPanel;
 
 		/// <summary>
 		/// Требуется переменная конструктора.
@@ -73,6 +65,7 @@ namespace FileMan {
 			this->ClientSize = System::Drawing::Size(1000, 258);
 			this->Name = L"Form1";
 			this->Text = L"Form1";
+			this->Enter += gcnew System::EventHandler(this, &Form1::Form1_Enter);
 			this->ResumeLayout(false);
 
 		}
@@ -89,6 +82,9 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 		 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 		 }
-};
+	private: System::Void Form1_Enter(System::Object^  sender, System::EventArgs^  e) {
+				 mainPanel->Update();
+			 }
+	};
 }
 

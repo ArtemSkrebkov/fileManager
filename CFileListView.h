@@ -18,11 +18,11 @@ public:
 	{
 		Items->Clear();
 		//this->Columns->Add("Names");
-		
+
 		for(unsigned int i = 0; i < folder->GetCountSubElement(); i++)
 		{
 			CElement *addElement = folder->GetSubElement(i);
-			
+
 			ListViewItem ^item1 = gcnew ListViewItem;
 			item1->Text = gcnew System::String(addElement->GetName().data());
 			this->Items->Add(item1);

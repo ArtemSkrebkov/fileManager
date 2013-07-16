@@ -57,11 +57,19 @@ public:
 		buttonPanel->Controls->AddRange(gcnew array<Control ^> {copyButton, sp1, moveButton, sp2, renameButton, sp3, deleteButton});
 
 		Splitter ^splitterButton = gcnew Splitter;
-		splitterButton->Dock = DockStyle::Bottom;
+		splitterButton->Dock = DockStyle::Bottom;		
 		
 		buttonPanel->Height = splitterButton->MinExtra;
 		array<Control ^> ^tmp = {rightPanel,splitterPanel,leftPanel, splitterButton, buttonPanel};
 		this->Controls->AddRange(tmp);
+
+		this->GotFocus += gcnew System::EventHandler(this, &CMainPanel::GotFocusEvent);
+	}
+
+	void Update()
+	{
+		leftPanel->Update();
+		rightPanel->Update();
 	}
 private:
 	CFilesPanel ^leftPanel;
@@ -74,6 +82,11 @@ private:
 	Button ^deleteButton;
 	Button ^moveButton;
 	Button ^renameButton;
+
+	void GotFocusEvent(System::Object^  sender, System::EventArgs^  e)
+	{
+		this->Update();
+	}
 
 	void LostFocusPanelEvent(System::Object^  sender, System::EventArgs^  e)
 	{
